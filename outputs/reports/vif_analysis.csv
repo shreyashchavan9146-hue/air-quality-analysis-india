@@ -1,0 +1,12 @@
+Feature,VIF,Model
+si,1.168790092903466,Model 1 - Subindices
+ni,1.2957886009383417,Model 1 - Subindices
+rpi,1.3779470668785845,Model 1 - Subindices
+spi,1.2721792932666622,Model 1 - Subindices
+so2,1.1302704346402186,Model 2 - Pollutants
+no2,1.1789055852434607,Model 2 - Pollutants
+spm,1.0568629457733585,Model 2 - Pollutants
+rspm,7.917202890466896,Model 3 - RSPM and SPM
+spm,21.89136337346183,Model 3 - RSPM and SPM
+spi,21.853485137225128,Model 3 - RSPM and SPM
+rpi,7.976979614714526,Model 3 - RSPM and SPM
