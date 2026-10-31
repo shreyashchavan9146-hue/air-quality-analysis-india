@@ -1,4 +1,4 @@
-
+import plotly.express as px
 import streamlit as st
 import pandas as pd
 import plotly.express as px
@@ -219,6 +219,62 @@ else:
 
 st.markdown("---")
 
+# ---------------- POLLUTION TREND ANALYSIS ----------------
+st.markdown("---")
+st.header("📅 Pollution Trends Over Time")
+
+date_col = find_column(
+    df,
+    ["date", "sampling date", "last updated", "datetime"]
+)
+
+if date_col is not None:
+    trend_data = df.copy()
+
+    trend_data[date_col] = pd.to_datetime(
+        trend_data[date_col],
+        errors="coerce",
+        dayfirst=True
+    )
+
+    trend_data = trend_data.dropna(subset=[date_col])
+
+    if not trend_data.empty:
+        trend_data["Month"] = (
+            trend_data[date_col].dt.to_period("M").astype(str)
+        )
+
+        trend_col = aqi_col if aqi_col else so2_col
+
+        if trend_col:
+            trend_data[trend_col] = pd.to_numeric(
+                trend_data[trend_col], errors="coerce"
+            )
+
+            monthly_data = (
+                trend_data.groupby("Month")[trend_col]
+                .mean()
+                .reset_index()
+            )
+
+            fig = px.line(
+                monthly_data,
+                x="Month",
+                y=trend_col,
+                markers=True,
+                title=f"Monthly Average {trend_col} Trend",
+                template="plotly_dark",
+                color_discrete_sequence=["#2DD4BF"]
+            )
+
+            st.plotly_chart(fig, use_container_width=True)
+        else:
+            st.warning("No suitable numeric pollutant column found.")
+    else:
+        st.warning("No valid dates found in the dataset.")
+else:
+    st.info("Your dataset does not contain a recognized date column.")
+
 # ---------------- ADVANCED AQI ANALYTICS ----------------
 st.markdown("---")
 st.header("📈 03A | Advanced AQI Analytics")
@@ -313,6 +369,16 @@ st.markdown("---")
 
 # ---------------- DATASET ----------------
 st.header("📁 05 | Dataset Explorer")
+if not df.empty:
+    csv_data = df.to_csv(index=False).encode("utf-8")
+
+    st.download_button(
+        label="⬇️ Download Dataset CSV",
+        data=csv_data,
+        file_name="india_air_quality_analysis.csv",
+        mime="text/csv",
+        use_container_width=True
+    )
 
 if not df.empty:
     st.success(f"Dataset loaded: {len(df):,} records")
